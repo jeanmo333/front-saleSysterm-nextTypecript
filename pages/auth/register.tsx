@@ -1,5 +1,4 @@
 import { useState, useContext } from "react";
-import { useRouter } from "next/router";
 
 import NextLink from "next/link";
 
@@ -19,6 +18,7 @@ import { AuthContext } from "../../context/auth";
 import { AuthLayout } from "../../components/layouts";
 import { validations } from "../../utils";
 
+
 type FormData = {
   name: string;
   email: string;
@@ -27,6 +27,11 @@ type FormData = {
 
 const RegisterPage = () => {
   const { registerUser } = useContext(AuthContext);
+  const [showError, setShowError] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [messageError, setMessageError] = useState("");
+  const [messageSuccess, setMessageSuccess] = useState("");
+
 
   const {
     register,
@@ -35,10 +40,7 @@ const RegisterPage = () => {
     formState: { errors },
   } = useForm<FormData>();
 
-  const [showError, setShowError] = useState(false);
-  const [showSuccess, setShowSuccess] = useState(false);
-  const [messageError, setMessageError] = useState("");
-  const [messageSuccess, setMessageSuccess] = useState("");
+
 
   const onRegisterForm = async ({ name, email, password }: FormData) => {
     const { hasError, message } = await registerUser(name, email, password);
@@ -46,18 +48,23 @@ const RegisterPage = () => {
     if (!hasError) {
       setShowSuccess(true);
       setMessageSuccess(message!);
-      setTimeout(() => setShowSuccess(false), 5000);
+      setTimeout(() => setShowSuccess(false), 10000);
+      reset();
       return;
     }
 
     if (hasError) {
       setShowError(true);
       setMessageError(message!);
-      setTimeout(() => setShowError(false), 5000);
+      setTimeout(() => setShowError(false), 10000);
+      reset();
       return;
     }
 
+
   };
+
+ 
 
   return (
     <AuthLayout title={"Ingresar"}>
@@ -79,6 +86,7 @@ const RegisterPage = () => {
                 className="fadeIn"
                 sx={{ display: showError ? "flex" : "none" }}
               />
+
 
               <Chip
                 label={messageSuccess}

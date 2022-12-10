@@ -1,17 +1,30 @@
 import { useState, useEffect } from 'react';
 import useSWR from 'swr';
-import { AttachMoneyOutlined, CreditCardOffOutlined, CreditCardOutlined, DashboardOutlined, GroupOutlined, CategoryOutlined, CancelPresentationOutlined, ProductionQuantityLimitsOutlined, AccessTimeOutlined } from '@mui/icons-material';
+import { AttachMoneyOutlined, CreditCardOffOutlined, CreditCardOutlined, DashboardOutlined, GroupOutlined, CategoryOutlined, CancelPresentationOutlined, ProductionQuantityLimitsOutlined, AccessTimeOutlined, Home } from '@mui/icons-material';
 
-
+import router, { useRouter } from "next/router";
 import { Grid, Typography } from '@mui/material'
 import { SummaryTile } from '../../components/admin'
 import { AdminLayout } from '../../components/layouts/AdminLayout';
 import { GetServerSideProps } from 'next';
 import Cookies from 'js-cookie';
-import router from 'next/router';
+import { useAuth } from '../../hooks';
 //import { DashboardSummaryResponse } from '../../interfaces';
+import { FullScreenLoading } from '../../components/ui/FullScreenLoading';
+import axios from 'axios';
+import error from 'next/error';
+import { amatecApi } from '../../api';
 
 const DashboardPage = () => {
+    const router = useRouter();
+
+   // const { isLoggedIn } = useAuth();
+
+
+
+
+
+
   /*
 
     const { data, error } = useSWR<DashboardSummaryResponse>('/api/admin/dashboard', {
@@ -53,8 +66,14 @@ const DashboardPage = () => {
     } = data!;
 
 */
+
+//if(isLoggedIn) return <><FullScreenLoading/></>
   return (
-    <AdminLayout title={''} subTitle={''}>
+    <AdminLayout 
+    title={'Dashboard'} 
+    subTitle={'estadistica del sistema'}
+    icon={<Home/>}
+    >
 
         <Grid container spacing={2}>
             
@@ -111,6 +130,47 @@ const DashboardPage = () => {
         </AdminLayout>
   )
 }
+
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+// export const getServerSideProps: GetServerSideProps = async ({ req }) => {
+
+//     const { token = '' } = req.cookies;
+//     let isValidToken = false;
+
+//     try {
+//        // await jwt.isValidToken( token );
+//         // const { data } = await amatecApi.get(`/auth/checkToken/${token}`);
+//        // await amatecApi.get(`/auth/checkToken/${token}`);
+//        if(token){
+//         router.push("/admin");
+//         isValidToken = true;
+//        }
+     
+//     } catch (error) {
+//         isValidToken = false;
+//     }
+
+//     if ( !isValidToken ) {
+//         return {
+//             redirect: {
+//                 destination: '/',
+//                 permanent: false
+        
+//         }
+           
+            
+//         }
+//     }
+
+//     return {
+//         props: {
+            
+//         }
+//     }
+// }
+
+
 
 
 

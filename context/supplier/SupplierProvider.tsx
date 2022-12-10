@@ -1,30 +1,15 @@
-import { FC, useReducer, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 
 import Cookies from "js-cookie";
 import axios from "axios";
 
 import { amatecApi } from "../../api";
 
-
-
-import {ISupplier } from "../../interfaces";
-import { supplierReducer } from "./supplierReducer";
 import { SuplierContext } from "./SupplierContext";
-
-export interface SupplierState {
-    suppliers?: ISupplier[];
-    isLoading: boolean;
-}
-
-const AUTH_INITIAL_STATE: SupplierState = {
-    suppliers: [],
-    isLoading: false
-};
-
-
+import { ISupplier } from "../../interfaces";
 
 export const SupplierProvider: FC = ({ children }) => {
-  const [state, dispatch] = useReducer(supplierReducer, AUTH_INITIAL_STATE);
+  const [suppliers, setSuppliers] = useState<ISupplier[]>([]);
 
   useEffect(() => {
     getSuppliers();
@@ -45,8 +30,8 @@ export const SupplierProvider: FC = ({ children }) => {
     };
     try {
       const { data } = await amatecApi.get("/supliers", config);
-     const { suppliers } = data;
-      dispatch({ type: "[Auth] - GetSuppliers", payload: suppliers });
+      const { suppliers } = data;
+      setSuppliers(suppliers);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         return {
@@ -60,11 +45,10 @@ export const SupplierProvider: FC = ({ children }) => {
   return (
     <SuplierContext.Provider
       value={{
-        ...state,
+        suppliers,
         // Methods
 
-        getSuppliers
-
+        getSuppliers,
       }}>
       {children}
     </SuplierContext.Provider>

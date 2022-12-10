@@ -1,4 +1,4 @@
-import { useState, useContext} from "react";
+import { useState, useContext } from "react";
 import NextLink from "next/link";
 
 import {
@@ -16,9 +16,9 @@ import { useForm } from "react-hook-form";
 import { AuthContext } from "../context/auth";
 import { AuthLayout } from "../components/layouts";
 import { validations } from "../utils";
-import { useRouter } from "next/router";
+import router, { useRouter } from "next/router";
 import { FullScreenLoading } from "../components/ui/FullScreenLoading";
-
+import { GetServerSideProps } from "next";
 
 type FormData = {
   email: string;
@@ -27,7 +27,7 @@ type FormData = {
 
 const LoginPage = () => {
   const router = useRouter();
-  const { loginUser} = useContext(AuthContext);
+  const { loginUser } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState("");
   const [showError, setShowError] = useState(false);
 
@@ -36,6 +36,7 @@ const LoginPage = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormData>();
 
@@ -47,19 +48,17 @@ const LoginPage = () => {
     if (hasError) {
       setShowError(true);
       setErrorMessage(message!);
-      setTimeout(() => setShowError(false), 5000);
+      setTimeout(() => setShowError(false), 10000);
+      reset();
       return;
     }
-
+    //router.reload();
     router.push("/admin");
   };
 
- 
-//if(!isLoading) return <>< FullScreenLoading/></>
-
+  //if(!isLoading) return <>< FullScreenLoading/></>
 
   return (
-
     <AuthLayout title={"Ingresar"}>
       <form onSubmit={handleSubmit(onLoginUser)} noValidate>
         <Box sx={{ width: 350, padding: "10px 20px" }}>
@@ -112,12 +111,13 @@ const LoginPage = () => {
 
             <Grid item xs={12}>
               <Button
+        
                 type="submit"
                 color="secondary"
                 className="circular-btn"
                 size="large"
                 fullWidth>
-               Iniciar Sesión
+                Iniciar Sesión
               </Button>
             </Grid>
 
@@ -136,6 +136,7 @@ const LoginPage = () => {
     </AuthLayout>
   );
 };
+
 
 
 

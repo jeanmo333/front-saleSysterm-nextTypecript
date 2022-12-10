@@ -1,10 +1,9 @@
-import { DashboardOutlined } from "@mui/icons-material";
+import {PeopleAlt } from "@mui/icons-material";
 import { Grid } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import React, { useContext } from "react";
+import React from "react";
 import { AdminLayout } from "../../../components/layouts/AdminLayout";
-import { FullScreenLoading } from "../../../components/ui";
-import { SuplierContext } from "../../../context/supplier/SupplierContext";
+import { useSuppliers } from "../../../hooks";
 
 const columns: GridColDef[] = [
   { field: "name", headerName: "Nombre", width: 200 },
@@ -12,27 +11,12 @@ const columns: GridColDef[] = [
   { field: "phone", headerName: "Telefono", width: 200 },
   { field: "rut", headerName: "Rut", width: 200 },
   { field: "web", headerName: "Web", width: 200 },
-  /*
-    {
-        field: 'check',
-        headerName: 'Ver orden',
-        renderCell: ({ row }: GridValueGetterParams) => {
-            return (
-                <a href={ `/admin/orders/${ row.id }` } target="_blank" rel="noreferrer" >
-                    Ver orden
-                </a>
-            )
-        }
-    },
 
-    { field: 'createdAt', headerName: 'Creada en', width: 300 },
-*/
 ];
 
 const SupplierPage = () => {
-  const { suppliers, isLoading } = useContext(SuplierContext);
+  const { suppliers } = useSuppliers();
 
-  if(!isLoading) return <><FullScreenLoading/></>
 
   const rows = suppliers!.map((supplier) => ({
     id: supplier.id,
@@ -46,9 +30,9 @@ const SupplierPage = () => {
     <AdminLayout
       title="Proveedores"
       subTitle="Gestionar Proveedores"
-      icon={<DashboardOutlined />}>
+      icon={< PeopleAlt />}>
       <Grid container className="fadeIn">
-        <Grid item xs={12} sx={{ height: 650, width: "100%" }}>
+        <Grid item xs={12} sx={{ height: 550, width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}

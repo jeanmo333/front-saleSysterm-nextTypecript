@@ -1,13 +1,10 @@
 import { createContext } from "react";
 import { ISupplier } from "../../interfaces";
 
-
 interface ContextProps {
-    suppliers?: ISupplier[];
-    isLoading: boolean;
+  suppliers?: ISupplier[];
 
-    getSuppliers: () => void;
-
+  getSuppliers: () => void;
 }
 
 export const SuplierContext = createContext({} as ContextProps);

@@ -4,9 +4,24 @@ import { ICustomer } from "../../interfaces";
 
 interface ContextProps {
   customers?: ICustomer[];
-  isLoading: boolean;
 
-  getCustomers: () => void;
+ // getCustomers: () => void;
+
+ 
+ registerCustomer: (
+  category: ICustomer
+) => Promise<{customer?: ICustomer;  hasError?: boolean; message?: string }>;
+
+updateCustomer: (
+  category: ICustomer
+) => Promise<{customer?: ICustomer; hasError?: boolean; message?: string }>;
+
+ getCustomer: (
+  id: string
+) => Promise<{ customer?: ICustomer; hasError?: boolean; message?: string }>;
+
+
+deleteCustomer: (id: string) => void;
 
 }
 

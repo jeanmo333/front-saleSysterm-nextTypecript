@@ -1,45 +1,30 @@
-import { FC, useReducer, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { useRouter } from "next/router";
-
 
 import Cookies from "js-cookie";
 import axios from "axios";
 
-import { AuthContext, authReducer } from "./";
+import { AuthContext} from "./";
 
 import { amatecApi } from "../../api";
 import { IUser } from "../../interfaces";
 
-export interface AuthState {
-  isLoggedIn: boolean;
-  user?: IUser;
-  users?: IUser[];
-  isLoading: boolean;
-}
 
-const AUTH_INITIAL_STATE: AuthState = {
-  isLoggedIn: false,
-  user: undefined,
-  users: [],
-  isLoading: false
-};
 
 export const AuthProvider: FC = ({ children }) => {
-  const [state, dispatch] = useReducer(authReducer, AUTH_INITIAL_STATE);
   const router = useRouter();
 
+  const [users, setUsers] = useState<IUser[]>([]);
+  const [auth, setAuth] = useState<IUser>();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+
   useEffect(() => {
-    userAuth();
-
-    getUsers();
-
-  }, []);
-  
     const userAuth = async () => {
       const token = Cookies.get("token");
 
       if (!token) {
-        return router.push("/");
+        return;
       }
 
       const config = {
@@ -50,10 +35,12 @@ export const AuthProvider: FC = ({ children }) => {
       };
       try {
         const { data } = await amatecApi.get("/auth/perfil", config);
-        router.push("/admin");
         const { token, ...user } = data;
-        Cookies.set("token", token);
-        dispatch({ type: "[Auth] - Login", payload: user });
+        Cookies.set("token", token)
+        setAuth(user);
+        setIsLoggedIn(true);
+        //router.push("/admin");
+        setIsLoggedIn(true);
       } catch (error) {
         Cookies.remove("token");
         if (axios.isAxiosError(error)) {
@@ -63,20 +50,16 @@ export const AuthProvider: FC = ({ children }) => {
           };
         }
       }
-
     };
 
 
-
-
-  
     const getUsers = async () => {
       const token = Cookies.get("token");
-  
+
       if (!token) {
         return;
       }
-  
+
       const config = {
         headers: {
           "Content-Type": "application/json",
@@ -86,7 +69,8 @@ export const AuthProvider: FC = ({ children }) => {
       try {
         const { data } = await amatecApi.get("/auth/users", config);
         const { users } = data;
-        dispatch({ type: "[Auth] - GetAllUsers", payload: users });
+
+        setUsers(users);
       } catch (error) {
         if (axios.isAxiosError(error)) {
           return {
@@ -96,14 +80,15 @@ export const AuthProvider: FC = ({ children }) => {
         }
       }
     };
-  
- 
 
+    userAuth(), getUsers();
+    
+  }, []);
 
   const loginUser = async (
     email: string,
     password: string
-  ): Promise<{ hasError: boolean; message?: string }>=> {
+  ): Promise<{ hasError: boolean; message?: string }> => {
     try {
       const { data } = await amatecApi.post("/auth/login", {
         email,
@@ -111,12 +96,12 @@ export const AuthProvider: FC = ({ children }) => {
       });
       const { token, user } = data;
       Cookies.set("token", token);
-      dispatch({ type: "[Auth] - Login", payload: user });
+      setAuth(user);
+      setIsLoggedIn(true);
       return {
         hasError: false,
         message: data.message,
       };
-   
     } catch (error) {
       if (axios.isAxiosError(error)) {
         return {
@@ -143,10 +128,6 @@ export const AuthProvider: FC = ({ children }) => {
         email,
         password,
       });
-      const { token, user } = data;
-     
-      //Cookies.set('token', token );
-      dispatch({ type: "[Auth] - Login", payload: user });
       return {
         hasError: false,
         message: data.message,
@@ -165,21 +146,16 @@ export const AuthProvider: FC = ({ children }) => {
       };
     }
   };
-
 
   const forgetPassword = async (
     email: string
-  ): Promise<{ hasError: boolean; message?: string }>=> {
+  ): Promise<{ hasError: boolean; message?: string }> => {
     try {
-      const { data } = await amatecApi.post(
-        "/auth/forgetPassword",
-        { email }
-      );
+      const { data } = await amatecApi.post("/auth/forgetPassword", { email });
       return {
         hasError: false,
         message: data.message,
       };
-   
     } catch (error) {
       if (axios.isAxiosError(error)) {
         return {
@@ -195,28 +171,25 @@ export const AuthProvider: FC = ({ children }) => {
     }
   };
 
-
-
   const logout = () => {
-    router.reload();
-    Cookies.remove('token');
-    
+    router.push("/");
+    setAuth(undefined);
+    Cookies.remove("token");
+   
   };
-
-
 
   return (
     <AuthContext.Provider
       value={{
-        ...state,
-     
+        auth,
+        users,
+        isLoggedIn,
+
         // Methods
         loginUser,
         registerUser,
         logout,
         forgetPassword,
-        userAuth
-        
       }}>
       {children}
     </AuthContext.Provider>

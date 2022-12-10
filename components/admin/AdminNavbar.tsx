@@ -1,10 +1,8 @@
-import { useContext } from "react";
 import NextLink from "next/link";
 
 import {
   AppBar,
   Box,
-  Button,
   IconButton,
   Link,
   Toolbar,
@@ -12,11 +10,7 @@ import {
 } from "@mui/material";
 import DehazeIcon from "@mui/icons-material/Dehaze";
 
-//import { UiContext } from "../../context";
-
 export const AdminNavbar = () => {
-  //const { toggleSideMenu } = useContext(UiContext);
-
   return (
     <AppBar>
       <Toolbar>
@@ -34,10 +28,10 @@ export const AdminNavbar = () => {
 
         <Box sx={{ display: { xs: "block", sm: "block" } }}>
           <IconButton sx={{ marginRight: 2, color: "white" }}>
-            <DehazeIcon  />
+            <DehazeIcon />
           </IconButton>
         </Box>
       </Toolbar>
     </AppBar>
   );
-}; 
+};

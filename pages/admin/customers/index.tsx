@@ -1,58 +1,76 @@
-import { DashboardOutlined } from '@mui/icons-material'
-import { Grid } from '@mui/material';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import React, { useContext } from 'react'
-import { AdminLayout } from '../../../components/layouts/AdminLayout'
-import { FullScreenLoading } from '../../../components/ui';
-import { CustomerContext } from '../../../context';
-import { customerReducer } from '../../../context/customer/customerReducer';
+import NextLink from "next/link";
+import { AddOutlined, Delete, Edit, FamilyRestroom } from "@mui/icons-material";
+import { Box, Button, Grid, IconButton } from "@mui/material";
+import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
+import React from "react";
+import { AdminLayout } from "../../../components/layouts/AdminLayout";
+import { useCustomers } from "../../../hooks";
 
-
-const columns: GridColDef[] = [
-  { field: "name", headerName: "Nombre", width: 200 },
-  { field: "email", headerName: "Correo", width: 200 },
-  { field: "phone", headerName: "Telefono", width: 200 },
-  { field: "rut", headerName: "Rut", width: 200 },
-  { field: "web", headerName: "Web", width: 200 },
-  /*
-    {
-        field: 'check',
-        headerName: 'Ver orden',
-        renderCell: ({ row }: GridValueGetterParams) => {
-            return (
-                <a href={ `/admin/orders/${ row.id }` } target="_blank" rel="noreferrer" >
-                    Ver orden
-                </a>
-            )
-        }
-    },
-
-    { field: 'createdAt', headerName: 'Creada en', width: 300 },
-*/
-];
 
 const CustomerPage = () => {
-
-  const { customers, isLoading } = useContext(CustomerContext);
-
-  if(!isLoading) return <><FullScreenLoading/></>
+  const { customers, deleteCustomer } = useCustomers();
 
   const rows = customers!.map((customer) => ({
-    id      : customer.id,
-    name    : customer.name,
-    email   : customer.email,
-    phone   : customer.phone,
-    rut     : customer.rut,
-    web     : customer.web,
+    id: customer.id,
+    name: customer.name,
+    email: customer.email,
+    phone: customer.phone,
+    rut: customer.rut,
+    web: customer.web,
+    address2:customer.address2
   }));
+
+
+  const columns: GridColDef[] = [
+    { field: "name", headerName: "Nombre", width: 150 },
+    { field: "email", headerName: "Correo", width: 200 },
+    { field: "phone", headerName: "Telefono", width: 150 },
+    { field: "rut", headerName: "Rut", width: 150 },
+    { field: "web", headerName: "Web", width: 150 },
+    { field: "address2", headerName: "Direccion", width: 200 },
+  
+    {
+      field: "check",
+      headerName: "Acciones",
+      width: 200,
+      renderCell: ({ row }: GridValueGetterParams) => {
+        return (
+          <>
+            <>
+              <NextLink href={`/admin/customers/${row.id}`} passHref>
+                <IconButton sx={{ marginRight: 2, color: "white" }}>
+                  <Edit sx={{ color: "#FF5733", fontSize: 30 }} />
+                </IconButton>
+              </NextLink>
+  
+              <IconButton
+                sx={{ marginRight: 2 }}
+                onClick={() => deleteCustomer(row.id)}>
+                <Delete sx={{ fontSize: 30, color: "#C70039" }} />
+              </IconButton>
+            </>
+          </>
+        );
+      },
+    },
+  ];
+  
   return (
     <AdminLayout
-    title='Clientes'
-    subTitle='Gestionar Clientes'
-    icon={ <DashboardOutlined /> }
->
-<Grid container className="fadeIn">
-        <Grid item xs={12} sx={{ height: 650, width: "100%" }}>
+      title="Clientes"
+      subTitle="Gestionar Clientes"
+      icon={<FamilyRestroom />}>
+
+      <Box display="flex" justifyContent="end" sx={{ mb: 2 }}>
+        <NextLink href="/admin/customers/CreateCustomer" passHref>
+          <Button startIcon={<AddOutlined />} color="secondary">
+            Crear Cliente
+          </Button>
+        </NextLink>
+      </Box>
+
+      <Grid container className="fadeIn">
+        <Grid item xs={12} sx={{ height: 550, width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}
@@ -62,7 +80,7 @@ const CustomerPage = () => {
         </Grid>
       </Grid>
     </AdminLayout>
-  )
-}
+  );
+};
 
-export default CustomerPage
+export default CustomerPage;

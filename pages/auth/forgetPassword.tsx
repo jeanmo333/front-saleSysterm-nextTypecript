@@ -4,7 +4,6 @@ import { AuthLayout } from "../../components/layouts";
 import { useForm } from "react-hook-form";
 import { useContext, useState } from "react";
 import { validations } from "../../utils";
-import { useRouter } from "next/router";
 import { AuthContext } from "../../context/auth";
 import { ErrorOutline } from "@mui/icons-material";
 
@@ -19,6 +18,7 @@ const FogetPasswordPage = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<FormData>();
   const [showError, setShowError] = useState(false);
@@ -32,14 +32,16 @@ const FogetPasswordPage = () => {
     if (!hasError) {
       setShowSuccess(true);
       setMessageSuccess(message!);
-      setTimeout(() => setShowSuccess(false), 5000);
+      setTimeout(() => setShowSuccess(false), 10000);
+      reset();
       return;
     }
 
     if (hasError) {
       setShowError(true);
       setMessageError(message!);
-      setTimeout(() => setShowError(false), 5000);
+      setTimeout(() => setShowError(false), 10000);
+      reset();
       return;
     }
   };

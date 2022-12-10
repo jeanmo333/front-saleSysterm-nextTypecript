@@ -1,6 +1,5 @@
 import { FC } from "react";
-import { Box, Grid, Typography } from "@mui/material";
-//import SideMenu from "../ui/SideMenu";
+import { Box, Typography } from "@mui/material";
 
 import Head from "next/head";
 import { Navbar, SideMenu } from "../ui";
@@ -30,7 +29,7 @@ export const AdminLayout: FC<Props> = ({ children, title, subTitle, icon }) => {
         sx={{
           margin: "30px auto",
           marginTop: "80px",
-          maxWidth:{xs:"100%", sm: "80%" } ,
+          maxWidth: { xs: "100%", md: "80%" },
           padding: "0px 30px",
         }}>
         <Box display="flex" flexDirection="column">

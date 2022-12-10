@@ -1,10 +1,10 @@
-import { DashboardOutlined } from "@mui/icons-material";
+import {ShoppingCart } from "@mui/icons-material";
 import { Grid } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import React, { useContext } from "react";
 import { AdminLayout } from "../../../components/layouts/AdminLayout";
-import { FullScreenLoading } from "../../../components/ui";
-import { ProductContext } from "../../../context";
+import { useProducts } from "../../../hooks";
+
 
 const columns: GridColDef[] = [
   { field: "name", headerName: "Nombre", width: 150 },
@@ -14,27 +14,12 @@ const columns: GridColDef[] = [
   { field: "stock", headerName: "Stock", width: 150 },
   { field: "category", headerName: "Categoria", width: 150 },
   { field: "suplier", headerName: "Proveedor", width: 150 },
-  /*
-    {
-        field: 'check',
-        headerName: 'Ver orden',
-        renderCell: ({ row }: GridValueGetterParams) => {
-            return (
-                <a href={ `/admin/orders/${ row.id }` } target="_blank" rel="noreferrer" >
-                    Ver orden
-                </a>
-            )
-        }
-    },
-
-    { field: 'createdAt', headerName: 'Creada en', width: 300 },
-*/
+  
 ];
 
 const ProductPage = () => {
-  const { products,isLoading } = useContext(ProductContext);
-  if(!isLoading) return <><FullScreenLoading/></>
-
+  const { products } = useProducts();
+  
   const rows = products!.map((product) => ({
     id             : product.id,
     name           : product.name,
@@ -50,9 +35,9 @@ const ProductPage = () => {
     <AdminLayout
       title="Productos"
       subTitle="Gestionar Productos"
-      icon={<DashboardOutlined />}>
+      icon={<ShoppingCart />}>
       <Grid container className="fadeIn">
-        <Grid item xs={12} sx={{ height: 650, width: "100%" }}>
+        <Grid item xs={12} sx={{ height: 550, width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}
